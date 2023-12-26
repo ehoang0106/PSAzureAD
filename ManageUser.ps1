@@ -92,10 +92,11 @@ function Grant-365License {
 
 
 function Remove-365License {
-    
-    $Email = Read-Host "Enter user's email"
+    param(
+        [string]$Email
+    )
 
-    
+    $Email = Read-Host "Enter user's email"    
     $User = Get-AzureADUser -ObjectId $Email
 
     #current assigned licenses of the user
@@ -104,17 +105,37 @@ function Remove-365License {
     #create object to hold user's licenses
     $Licenses = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicenses
 
-    $LicensesToRemove = "f245ecc8-75af-4f8e-b61f-27d8114de5f3" #this is M365 office license SKU ID
+    $M365License = "f245ecc8-75af-4f8e-b61f-27d8114de5f3" #this is M365 office license SKU ID
 
-    foreach($li in $CurrentLicenses.SkuId){
-        if($li -eq $LicensesToRemove){
-            $Licenses.RemoveLicenses = $li
+    Write-Host
+    Write-Host "Enter (1) to remove Microsoft 365 Standard license"
+    Write-Host "Enter (2) to remove all the assigned licenses"
+    $option = Read-Host "Option"
+
+    if($option -eq "1"){
+        foreach($li in $CurrentLicenses.SkuId){
+            if($li -eq $M365License){
+                $Licenses.RemoveLicenses = $li
+            }
         }
+        #remove 365 license
+        Set-AzureADUserLicense -ObjectId $User.ObjectId -AssignedLicenses $Licenses
+    
+        Write-Host "`nMicrosoft 365 license for $($User.DisplayName)($Email) has been removed!" -ForegroundColor Green 
     }
-    #remove 365 license
-    Set-AzureADUserLicense -ObjectId $User.ObjectId -AssignedLicenses $Licenses
+    elseif($option -eq "2"){
+        foreach($li in $CurrentLicenses.SkuId){
+            $Licenses.RemoveLicenses += $li
+        }
 
-    Write-Host "`nMicrosoft 365 License for $($User.DisplayName)($UserEmail) has been removed!" -ForegroundColor Green 
+        Set-AzureADUserLicense -ObjectId $User.ObjectId -AssignedLicenses $Licenses
+
+        Write-Host "`nAll the assigned licenses for $($User.DisplayName)($Email) has been removed!" -ForegroundColor Green
+    }
+    else{
+        Write-Host "Wrong input!" -ForegroundColor Red -BackgroundColor White
+    }
+    
     
 }
 
@@ -145,7 +166,7 @@ function Open-OptionMenu {
         Write-Host "Enter (2) to Assign M365 Office license to a user" -ForegroundColor Green 
         Write-Host "Enter (3) to List out users that assigned M365 Office license" -ForegroundColor Green 
         Write-Host "Enter (4) to Remove an existing user" -ForegroundColor Red 
-        Write-Host "Enter (5) to Unassigned M365 Office license to a user" -ForegroundColor Red 
+        Write-Host "Enter (5) to Unassigned licenses for a user" -ForegroundColor Red 
         Write-Host "Enter (q) to Exit" -ForegroundColor Red 
         Write-Host "----------------------"
 
