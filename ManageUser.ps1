@@ -1,14 +1,3 @@
-# param(
-#         [string]$DisplayName,
-#         [string]$GivenName,
-#         [string]$Surname,
-#         [SecureString]$Password,
-#         [string]$UserPrincipalName,
-#         [string]$Department,
-#         [string]$UsageLocation = "US",
-#         [string]$MailNickName,
-#         [Bool]$AccountEnabled = $true
-#     )
 
 function Enter-NewUser {
    
@@ -48,7 +37,7 @@ function Enter-NewUser {
     $PasswordProfile.Password = $Password
 
     # Create new Azure AD user
-    New-AzureADUser -DisplayName $DisplayName -GivenName $GivenName -Surname $Surname -PasswordProfile $PasswordProfile -UserPrincipalName $UserPrincipalName -Department $Department -UsageLocation "US" -AccountEnabled $true -MailNickName $MailNickName 
+    New-AzureADUser -DisplayName $DisplayName -GivenName $GivenName -Surname $Surname -PasswordProfile $PasswordProfile -UserPrincipalName $UserPrincipalName -Department $Department -UsageLocation "US" -AccountEnabled $true -MailNickName $MailNickName | Out-Host
     Write-Host "$DisplayName has been added!" -ForegroundColor green 
 }
 
@@ -65,7 +54,7 @@ function Enter-DelUser {
     $user = Get-AzureADUser -ObjectId $ObjectID
     $nameOfUser = $user.DisplayName
 
-    Remove-AzureADUser -ObjectId $ObjectID
+    Remove-AzureADUser -ObjectId $ObjectID | Out-Host
 
     Write-Host "$nameOfuser has been removed! The account is still staying in the Deleted User folder" -ForegroundColor Green -BackgroundColor White
 }
@@ -92,7 +81,7 @@ function Grant-365License {
     $Licenses.AddLicenses = $Sku
 
     #Assign the license to the user
-    Set-AzureADUserLicense -ObjectId $User.ObjectId -AssignedLicenses $Licenses
+    Set-AzureADUserLicense -ObjectId $User.ObjectId -AssignedLicenses $Licenses | Out-Host
 
     $nameOfUser = $User.DisplayName
     $email = $User.UserPrincipalName
@@ -101,21 +90,22 @@ function Grant-365License {
 
 }
 
+function Search-365Users {
+    $Sku = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicense
 
-
-
-
-
-
-
-
+    #this is SKU ID of Microsoft 365 Business standard
+    $Sku.SkuId = "f245ecc8-75af-4f8e-b61f-27d8114de5f3"
+    
+    Get-AzureADUser -All $true | Where-Object {$_.AssignedLicenses.SkuId -contains $Sku.SkuId} | Out-Host
+}
 function Open-OptionMenu {
     while($true){
         Write-Host "`n----------------------"
         Write-Host "Enter (1) to Add a new user"
         Write-Host "Enter (2) to Remove an existing user"
         Write-Host "Enter (3) to assigned M365 Office license to a user"
-        Write-Host "Enter (4) to Exit"
+        Write-Host "Enter (4) to search users that assigned M365 Office license"
+        Write-Host "Enter (q) to Exit"
         Write-Host "----------------------"
 
         $option = Read-Host "Enter option"
@@ -130,7 +120,10 @@ function Open-OptionMenu {
         elseif ($option -eq "3") {
             Grant-365License
         }
-        elseif ($option -eq "4"){
+        elseif ($option -eq "4") {
+            Search-365Users
+        }
+        elseif ($option -eq "q"){
             break
         }
         else {
@@ -141,3 +134,5 @@ function Open-OptionMenu {
 }
 
 Open-OptionMenu
+
+
