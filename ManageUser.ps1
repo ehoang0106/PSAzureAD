@@ -1,7 +1,16 @@
-#Need to Set-ExecutionPolicy to bypass and run the script as Administrator
 #Install AzureAD module
-#Type Connect-AzureAD to connect Azure AD
 
+#Install-Module AzureAD
+
+#Need to Set-ExecutionPolicy to bypass to ensure the script can run
+
+#Set-ExecutionPolicy bypass -scope process
+
+#Run the script as Administrator
+
+#Type Connect-AzureAD to connect Azure AD and run the script
+
+#$CsvPath = C:\Users\KhoaHoang\Downloads\VSCode\Powershell-Project\ManagerUser\sku.csv
 
 function Enter-NewUser {
    
@@ -176,7 +185,41 @@ function Search-365Users {
         Out-Host
 }
 
+function Search-LicenseName {
+    
 
+    $csv = Import-Csv -path C:\Users\KhoaHoang\Downloads\VSCode\Powershell-Project\ManagerUser\sku.csv
+
+    $email = Read-Host "Enter user's email"
+    Write-Host
+    $user = Get-AzureADUser -ObjectId $email
+    $name = $user.DisplayName
+
+    #Create a variable to hold the SKUs ID of the assigned licenses
+    $UserLicenseSKUs = $user.AssignedLicenses.SkuId
+
+    
+    $MatchFound = $false
+    
+    for ($i = 0; $i -lt $csv.licenseSKUID.Count; $i++) {
+    
+        foreach ($li in $UserLicenseSKUs) {
+            if ($li -eq $csv.licenseSKUID[$i]) {
+                Write-Host $csv.ProductName[$i] -ForegroundColor Green
+                $MatchFound = $true # set the flag to true if a match is found
+            }
+        }
+        
+        
+    }
+    
+    # Check if no match was found after going through all UserLicenseSKUs
+    if (-not $MatchFound) {
+        Write-Host "`n$name($email) has not been assigned any licenses." -ForegroundColor DarkYellow
+    }
+    
+
+}
 
 
 function Open-OptionMenu {
@@ -188,7 +231,8 @@ function Open-OptionMenu {
         Write-Host "Enter (2) to Assign M365 Office license to a user" -ForegroundColor Cyan 
         Write-Host "Enter (3) to List out users that assigned M365 Office license" -ForegroundColor Cyan 
         Write-Host "Enter (4) to Remove an existing user" -ForegroundColor Red 
-        Write-Host "Enter (5) to Unassigned licenses to a user" -ForegroundColor Red 
+        Write-Host "Enter (5) to Unassigned licenses to a user" -ForegroundColor Red
+        Write-Host "Enter (6) to Search assigned licenses to a user" -ForegroundColor Cyan 
         Write-Host "Enter (q) to Exit" -ForegroundColor Red 
         Write-Host "----------------------"
 
@@ -219,6 +263,9 @@ function Open-OptionMenu {
         }
         elseif ($option -eq "5") {
             Remove-365License
+        }
+        elseif ($option -eq "6") {
+            Search-LicenseName
         }
         elseif ($option -eq "q"){
             break
