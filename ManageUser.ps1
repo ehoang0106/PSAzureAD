@@ -1,3 +1,5 @@
+#--------------------------------------------------------------------------------------#
+
 #Install AzureAD module
 
 #Install-Module AzureAD
@@ -11,6 +13,12 @@
 #Type Connect-AzureAD to connect Azure AD and run the script
 
 #$CsvPath = C:\Users\KhoaHoang\Downloads\VSCode\Powershell-Project\ManagerUser\sku.csv
+
+#--------------------------------------------------------------------------------------#
+
+
+
+
 
 function Enter-NewUser {
    
@@ -219,7 +227,6 @@ function Search-LicenseName {
     
 }
 
-
 function Open-OptionMenu {
     while($true){
         Write-Host "`n----------------------" 
@@ -260,11 +267,12 @@ function Open-OptionMenu {
         }
         else {
             Write-Host
-            Write-Host "`Invalid input. Try again!" -ForegroundColor Red -BackgroundColor White
+            Write-Host "`nInvalid input. Try again!" -ForegroundColor Red -BackgroundColor White
         }
     }
     
 }
+
 
 Open-OptionMenu
 
