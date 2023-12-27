@@ -25,9 +25,11 @@ function Enter-NewUser {
     # Prompt for user input if not provided as arguments
     if (-not $GivenName){
         $GivenName = Read-Host "Enter Firstname"
+        $GivenName = (Get-Culture).TextInfo.ToTitleCase($GivenName)
     }
     if (-not $Surname){
         $Surname = Read-Host "Enter Lastname"
+        $Surname = (Get-Culture).TextInfo.ToTitleCase($Surname)
     }
     if (-not $DisplayName) {
         $DisplayName = "$GivenName $Surname"
@@ -95,6 +97,28 @@ function Enter-DelUser {
     
 }
 
+function Enter-NewUserPW {
+    param (
+        [string] $Email,
+        [SecureString] $Password
+    )
+    try {
+        $Email = Read-Host "Enter email"
+        $Password = Read-Host "Enter Temporary Password" -AsSecureString
+        $User = Get-AzureADUser -ObjectId $Email
+        $NameOfUser = $User.DisplayName
+
+        Set-AzureADUserPassword -ObjectId $Email -Password $Password
+        Write-Host
+        Write-Host "Successfully reset password for $NameOfUser($Email)" -ForegroundColor Green
+    }
+    catch {
+        Write-Host "`nUser not found or Password does not comply with password complexity requirements." -ForegroundColor Red -BackgroundColor White
+    }
+    
+    
+
+}
 
 function Grant-365License {
 
@@ -104,16 +128,16 @@ function Grant-365License {
     $EmailUser = Read-Host "Enter user's email"
     $User = Get-AzureADUser -ObjectId $EmailUser
 
-    #create a AssignedLicense object
+    #create a AssignedLicense object to hold SkuId
     $Sku = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicense
 
-    #Set the SKU ID -> This is M365 Office SKUID
+    #Set the SKU ID to the Sku object -> This is M365 Office SKUID
     $Sku.SkuId = "f245ecc8-75af-4f8e-b61f-27d8114de5f3"
 
-    #Create the AssignedLicenses object
+    #Create the AssignedLicenses object to add a SkuId to assign license(s)
     $Licenses = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicenses
 
-    #Add the SKU
+    #Add the SkuId (which is a m365 license to $Linceses object)
     $Licenses.AddLicenses = $Sku
 
     #Assign the license to the user
@@ -237,7 +261,8 @@ function Open-OptionMenu {
         Write-Host "Enter (3) to List out users that assigned M365 Office license" -ForegroundColor Cyan 
         Write-Host "Enter (4) to Remove an existing user" -ForegroundColor Red 
         Write-Host "Enter (5) to Unassigned licenses to a user" -ForegroundColor Red
-        Write-Host "Enter (6) to Search assigned licenses to a user" -ForegroundColor Cyan 
+        Write-Host "Enter (6) to Search assigned licenses to a user" -ForegroundColor Cyan
+        Write-Host "Enter (7) to Reset password for a user" -ForegroundColor Cyan 
         Write-Host "Enter (q) to Exit" -ForegroundColor Red 
         Write-Host "----------------------"
 
@@ -261,6 +286,9 @@ function Open-OptionMenu {
         }
         elseif ($option -eq "6") {
             Search-LicenseName
+        }
+        elseif ($option -eq "7") {
+            Enter-NewUserPW
         }
         elseif ($option -eq "q"){
             break
