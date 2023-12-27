@@ -1,3 +1,7 @@
+#Need to Set-ExecutionPolicy to bypass and run the script as Administrator
+#Install AzureAD module
+#Type Connect-AzureAD to connect Azure AD
+
 
 function Enter-NewUser {
    
@@ -38,7 +42,7 @@ function Enter-NewUser {
 
     # Create new Azure AD user
     New-AzureADUser -DisplayName $DisplayName -GivenName $GivenName -Surname $Surname -PasswordProfile $PasswordProfile -UserPrincipalName $UserPrincipalName -Department $Department -UsageLocation "US" -AccountEnabled $true -MailNickName $MailNickName | Out-Host
-    Write-Host "$DisplayName has been added!" -ForegroundColor green 
+    Write-Host "`n$DisplayName ($UserPrincipalName) has been added!" -ForegroundColor green 
 }
 
 
@@ -52,7 +56,7 @@ function Enter-DelUser {
     Write-Host
     
     while($true){
-        $option = $(Write-Host "Please confirm again before removing user (Y/N): " -ForegroundColor Red -BackgroundColor White; Read-Host) 
+        $option = $(Write-Host "Please confirm again before removing user (Y/N): " -ForegroundColor Red -BackgroundColor White -NoNewline; Read-Host) 
         $option = $option.ToLower()
         if($option -eq "y"){
             $ObjectID = Read-Host "Enter user's email"
@@ -62,8 +66,8 @@ function Enter-DelUser {
             $emailOfUser = $user.UserPrincipalName
 
             Remove-AzureADUser -ObjectId $ObjectID | Out-Host
-
-            Write-Host "$nameOfuser($emailOfUser) has been removed! The account is still staying in the Deleted User folder" -ForegroundColor Green -BackgroundColor White
+            Write-Host
+            Write-Host "$nameOfuser($emailOfUser) has been removed! The account is still staying in the Deleted User folder" -ForegroundColor Green
             break
         }
         elseif($option -eq "n"){
