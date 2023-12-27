@@ -49,14 +49,32 @@ function Enter-DelUser {
         [string] $ObjectID
     )
     Write-Host "Warning! This function is removing user. Please be careful!!!" -ForegroundColor Red -BackgroundColor White
-    $ObjectID = Read-Host "Enter user's email"
+    Write-Host
+    
+    while($true){
+        $option = $(Write-Host "Please confirm again before removing user (Y/N): " -ForegroundColor Red -BackgroundColor White; Read-Host) 
+        $option = $option.ToLower()
+        if($option -eq "y"){
+            $ObjectID = Read-Host "Enter user's email"
 
-    $user = Get-AzureADUser -ObjectId $ObjectID
-    $nameOfUser = $user.DisplayName
+            $user = Get-AzureADUser -ObjectId $ObjectID
+            $nameOfUser = $user.DisplayName
+            $emailOfUser = $user.UserPrincipalName
 
-    Remove-AzureADUser -ObjectId $ObjectID | Out-Host
+            Remove-AzureADUser -ObjectId $ObjectID | Out-Host
 
-    Write-Host "$nameOfuser has been removed! The account is still staying in the Deleted User folder" -ForegroundColor Green -BackgroundColor White
+            Write-Host "$nameOfuser($emailOfUser) has been removed! The account is still staying in the Deleted User folder" -ForegroundColor Green -BackgroundColor White
+            break
+        }
+        elseif($option -eq "n"){
+            break
+        }
+        else{
+            Write-Host "Invalid option. Try again!"
+        }
+    }
+    
+    
 }
 
 
@@ -91,7 +109,7 @@ function Grant-365License {
 }
 
 
-function Remove-365License {
+function Remove-Licenses {
     param(
         [string]$Email
     )
@@ -162,16 +180,26 @@ function Open-OptionMenu {
         Write-Host "`n----------------------" 
         Write-Host "     Menu option  " 
         Write-Host "----------------------" 
-        Write-Host "Enter (1) to Add a new user" -ForegroundColor Green 
-        Write-Host "Enter (2) to Assign M365 Office license to a user" -ForegroundColor Green 
-        Write-Host "Enter (3) to List out users that assigned M365 Office license" -ForegroundColor Green 
+        Write-Host "Enter (1) to Add a new user" -ForegroundColor Cyan 
+        Write-Host "Enter (2) to Assign M365 Office license to a user" -ForegroundColor Cyan 
+        Write-Host "Enter (3) to List out users that assigned M365 Office license" -ForegroundColor Cyan 
         Write-Host "Enter (4) to Remove an existing user" -ForegroundColor Red 
-        Write-Host "Enter (5) to Unassigned licenses for a user" -ForegroundColor Red 
+        Write-Host "Enter (5) to Unassigned licenses to a user" -ForegroundColor Red 
         Write-Host "Enter (q) to Exit" -ForegroundColor Red 
         Write-Host "----------------------"
 
-        $option = $(Write-Host "Enter option: " -ForegroundColor DarkYellow -NoNewline; Read-Host) 
+        $option = $(Write-Host "Enter option: " -ForegroundColor DarkCyan -NoNewline; Read-Host) 
 
+
+        # switch ($option) {
+        #     "1" { Enter-NewUser }
+        #     "2" { Grant-365License }
+        #     "3" { Search-365Users }
+        #     "4" { Enter-DelUser  }
+        #     "5" { Remove-Licenses }
+        #     "q" { break }    
+        #     Default {Write-Host "Wrong input. Try again!" -ForegroundColor Red -BackgroundColor White}
+        # }
 
         if ($option -eq "1"){
             Enter-NewUser
