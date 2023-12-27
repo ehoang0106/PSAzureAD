@@ -258,11 +258,10 @@ function Open-OptionMenu {
         Write-Host "----------------------" 
         Write-Host "Enter (1) to Add a new user" -ForegroundColor Cyan 
         Write-Host "Enter (2) to Assign M365 Office license to a user" -ForegroundColor Cyan 
-        Write-Host "Enter (3) to List out users that assigned M365 Office license" -ForegroundColor Cyan 
-        Write-Host "Enter (4) to Remove an existing user" -ForegroundColor Red 
-        Write-Host "Enter (5) to Unassigned licenses to a user" -ForegroundColor Red
-        Write-Host "Enter (6) to Search assigned licenses to a user" -ForegroundColor Cyan
-        Write-Host "Enter (7) to Reset password for a user" -ForegroundColor Cyan 
+        Write-Host "Enter (3) to Remove an existing user" -ForegroundColor Red 
+        Write-Host "Enter (4) to Unassigned licenses to a user" -ForegroundColor Red
+        Write-Host "Enter (5) to Search assigned licenses to a user" -ForegroundColor Cyan
+        Write-Host "Enter (6) to Reset password for a user" -ForegroundColor Cyan 
         Write-Host "Enter (q) to Exit" -ForegroundColor Red 
         Write-Host "----------------------"
 
@@ -275,19 +274,19 @@ function Open-OptionMenu {
         elseif ($option -eq "2"){
             Grant-365License
         }
+        # elseif ($option -eq "3") {
+        #     Search-365Users
+        # }
         elseif ($option -eq "3") {
-            Search-365Users
-        }
-        elseif ($option -eq "4") {
             Enter-DelUser
         }
-        elseif ($option -eq "5") {
+        elseif ($option -eq "4") {
             Remove-Licenses
         }
-        elseif ($option -eq "6") {
+        elseif ($option -eq "5") {
             Search-LicenseName
         }
-        elseif ($option -eq "7") {
+        elseif ($option -eq "6") {
             Enter-NewUserPW
         }
         elseif ($option -eq "q"){
