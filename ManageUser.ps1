@@ -14,7 +14,6 @@
 
 function Enter-NewUser {
    
-
     # Prompt for user input if not provided as arguments
     if (-not $GivenName){
         $GivenName = Read-Host "Enter Firstname"
@@ -56,7 +55,6 @@ function Enter-NewUser {
 
 
 
-
 function Enter-DelUser {
     param (
         [string] $ObjectID
@@ -87,13 +85,12 @@ function Enter-DelUser {
         }
     }
     
-    
 }
 
 
 function Grant-365License {
 
-    #M365 SKUID: f245ecc8-75af-4f8e-b61f-27d8114de5f3
+    # M365 SKUID: f245ecc8-75af-4f8e-b61f-27d8114de5f3
 
     
     $EmailUser = Read-Host "Enter user's email"
@@ -139,8 +136,8 @@ function Remove-Licenses {
     $M365License = "f245ecc8-75af-4f8e-b61f-27d8114de5f3" #this is M365 office license SKU ID
 
     Write-Host
-    Write-Host "Enter (1) to remove Microsoft 365 Standard license"
-    Write-Host "Enter (2) to remove all the assigned licenses"
+    Write-Host "Enter (1) to remove Microsoft 365 Standard license" -ForegroundColor Cyan
+    Write-Host "Enter (2) to remove all the assigned licenses" -ForegroundColor Red
     $option = Read-Host "Option"
 
     if($option -eq "1"){
@@ -186,39 +183,40 @@ function Search-365Users {
 }
 
 function Search-LicenseName {
-    
-
+    # import csv file
     $csv = Import-Csv -path C:\Users\KhoaHoang\Downloads\VSCode\Powershell-Project\ManagerUser\sku.csv
 
-    $email = Read-Host "Enter user's email"
-    Write-Host
-    $user = Get-AzureADUser -ObjectId $email
-    $name = $user.DisplayName
+    try {
+        $email = Read-Host "Enter user's email"
+        Write-Host
+        $user = Get-AzureADUser -ObjectId $email
+        $name = $user.DisplayName
 
-    #Create a variable to hold the SKUs ID of the assigned licenses
-    $UserLicenseSKUs = $user.AssignedLicenses.SkuId
-
-    
-    $MatchFound = $false
-    
-    for ($i = 0; $i -lt $csv.licenseSKUID.Count; $i++) {
-    
-        foreach ($li in $UserLicenseSKUs) {
-            if ($li -eq $csv.licenseSKUID[$i]) {
-                Write-Host $csv.ProductName[$i] -ForegroundColor Green
-                $MatchFound = $true # set the flag to true if a match is found
+        #Create a variable to hold the SKUs ID of the assigned licenses
+        $UserLicenseSKUs = $user.AssignedLicenses.SkuId
+        
+        $MatchFound = $false
+        
+        for ($i = 0; $i -lt $csv.licenseSKUID.Count; $i++) {
+        
+            foreach ($li in $UserLicenseSKUs) {
+                if ($li -eq $csv.licenseSKUID[$i]) {
+                    Write-Host $csv.ProductName[$i] -ForegroundColor Green
+                    $MatchFound = $true # set the flag to true if a match is found
+                }
             }
         }
         
+        # Check if no match was found after going through all UserLicenseSKUs
+        if (-not $MatchFound) {
+            Write-Host "`n$name($email) has not been assigned any licenses." -ForegroundColor DarkYellow
+        }
         
     }
-    
-    # Check if no match was found after going through all UserLicenseSKUs
-    if (-not $MatchFound) {
-        Write-Host "`n$name($email) has not been assigned any licenses." -ForegroundColor DarkYellow
+    catch {
+        Write-Host "User not found!" -ForegroundColor red -BackgroundColor White
     }
     
-
 }
 
 
@@ -239,16 +237,6 @@ function Open-OptionMenu {
         $option = $(Write-Host "Enter option: " -ForegroundColor DarkCyan -NoNewline; Read-Host) 
 
 
-        # switch ($option) {
-        #     "1" { Enter-NewUser }
-        #     "2" { Grant-365License }
-        #     "3" { Search-365Users }
-        #     "4" { Enter-DelUser  }
-        #     "5" { Remove-Licenses }
-        #     "q" { break }    
-        #     Default {Write-Host "Wrong input. Try again!" -ForegroundColor Red -BackgroundColor White}
-        # }
-
         if ($option -eq "1"){
             Enter-NewUser
         }
@@ -262,7 +250,7 @@ function Open-OptionMenu {
             Enter-DelUser
         }
         elseif ($option -eq "5") {
-            Remove-365License
+            Remove-Licenses
         }
         elseif ($option -eq "6") {
             Search-LicenseName
