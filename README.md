@@ -1,4 +1,5 @@
 # Manager Users and Licenses PowerShell Script
+![demo](https://imgur.com/a/gQYORqp)
 
 The `ManageUsers.ps1` script is designed for efficient user creation within Azure Active Directory. 
 The script automates task creating users account leveraging AzureAD module capabilities.
