@@ -155,49 +155,68 @@ function Remove-Licenses {
     param(
         [string]$Email
     )
+    try {
+        $Email = Read-Host "Enter user's email"    
+        $User = Get-AzureADUser -ObjectId $Email
+        $name = $user.DisplayName
 
-    $Email = Read-Host "Enter user's email"    
-    $User = Get-AzureADUser -ObjectId $Email
+        #current assigned licenses of the user
+        $CurrentLicenses = $User.AssignedLicenses
 
-    #current assigned licenses of the user
-    $CurrentLicenses = $User.AssignedLicenses
+        #create object to hold user's licenses
+        $Licenses = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicenses
 
-    #create object to hold user's licenses
-    $Licenses = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicenses
+        $M365License = "f245ecc8-75af-4f8e-b61f-27d8114de5f3" #this is M365 office license SKU ID
 
-    $M365License = "f245ecc8-75af-4f8e-b61f-27d8114de5f3" #this is M365 office license SKU ID
+        Write-Host
+        Write-Host "Enter (1) to remove Microsoft 365 Standard license" -ForegroundColor Cyan
+        Write-Host "Enter (2) to remove all the assigned licenses" -ForegroundColor Red
+        $option = Read-Host "Option"
 
-    Write-Host
-    Write-Host "Enter (1) to remove Microsoft 365 Standard license" -ForegroundColor Cyan
-    Write-Host "Enter (2) to remove all the assigned licenses" -ForegroundColor Red
-    $option = Read-Host "Option"
-
-    if($option -eq "1"){
-        foreach($li in $CurrentLicenses.SkuId){
-            if($li -eq $M365License){
-                $Licenses.RemoveLicenses = $li
+        if($option -eq "1"){
+            foreach($li in $CurrentLicenses.SkuId){
+                if($li -eq $M365License){
+                    $Licenses.RemoveLicenses = $li
+                }
             }
+            #remove 365 license
+            Set-AzureADUserLicense -ObjectId $User.ObjectId -AssignedLicenses $Licenses
+        
+            Write-Host "`nMicrosoft 365 license for $($User.DisplayName)($Email) has been removed!" -ForegroundColor Green 
         }
-        #remove 365 license
-        Set-AzureADUserLicense -ObjectId $User.ObjectId -AssignedLicenses $Licenses
-    
-        Write-Host "`nMicrosoft 365 license for $($User.DisplayName)($Email) has been removed!" -ForegroundColor Green 
-    }
-    elseif($option -eq "2"){
-        foreach($li in $CurrentLicenses.SkuId){
-            $Licenses.RemoveLicenses += $li
+        elseif($option -eq "2"){
+            foreach($li in $CurrentLicenses.SkuId){
+                $Licenses.RemoveLicenses += $li
+            }
+
+            Set-AzureADUserLicense -ObjectId $User.ObjectId -AssignedLicenses $Licenses
+
+            Write-Host "`nAll the assigned licenses for $($User.DisplayName)($Email) has been removed!" -ForegroundColor Green
         }
-
-        Set-AzureADUserLicense -ObjectId $User.ObjectId -AssignedLicenses $Licenses
-
-        Write-Host "`nAll the assigned licenses for $($User.DisplayName)($Email) has been removed!" -ForegroundColor Green
+        else{
+            Write-Host "Wrong input!" -ForegroundColor Red -BackgroundColor White
+        }
     }
-    else{
-        Write-Host "Wrong input!" -ForegroundColor Red -BackgroundColor White
+    catch {
+            if ($_.Exception.Response.StatusCode -eq 'NotFound') {
+                Write-Host "`nResource not found: $($_.Exception.Message)"
+            }
+            elseif ($_.Exception.Message -match 'Resource.*not exist') {
+                Write-Host "`nUser not found" -ForegroundColor Red -BackgroundColor White
+            }
+            elseif ($_.Exception.Response.StatusCode -eq 'BadRequest') {
+                Write-Host "`nBad request error: $($_.Exception.Message)"
+            }
+            elseif ($_.Exception.Message -match 'No license changes provided') {
+                Write-Host "`n$name($Email) has not been assigned any licenses." -ForegroundColor DarkYellow
+            }
+            else {
+                throw $_
+            }
     }
-    
-    
 }
+
+
 
 
 
