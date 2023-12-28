@@ -123,7 +123,6 @@ function Enter-NewUserPW {
 function Grant-365License {
 
     # M365 SKUID: f245ecc8-75af-4f8e-b61f-27d8114de5f3
-
     
     $EmailUser = Read-Host "Enter user's email"
     $User = Get-AzureADUser -ObjectId $EmailUser
@@ -145,7 +144,7 @@ function Grant-365License {
 
     $nameOfUser = $User.DisplayName
     $email = $User.UserPrincipalName
-    
+
 
     Write-Host "`nMicrosoft 365 License for $nameOfUser($email) has been added!" -ForegroundColor green 
 
