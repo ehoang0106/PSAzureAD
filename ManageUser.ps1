@@ -115,8 +115,6 @@ function Enter-NewUserPW {
     catch {
         Write-Host "`nUser not found or Password does not comply with password complexity requirements." -ForegroundColor Red -BackgroundColor White
     }
-    
-    
 
 }
 
