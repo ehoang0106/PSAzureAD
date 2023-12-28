@@ -145,6 +145,7 @@ function Grant-365License {
 
     $nameOfUser = $User.DisplayName
     $email = $User.UserPrincipalName
+    
 
     Write-Host "`nMicrosoft 365 License for $nameOfUser($email) has been added!" -ForegroundColor green 
 
