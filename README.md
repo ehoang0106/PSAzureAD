@@ -1,41 +1,70 @@
+# Manager Users and Licenses PowerShell Script
 
-# ManageUser PowerShell Script
-
-## Introduction
-The `ManageUser.ps1` script is designed for efficient user management within Azure Active Directory (Azure AD). It automates tasks such as creating, updating, and removing users, leveraging AzureAD module capabilities. This tool is ideal for system administrators managing large user bases in Azure AD.
+The `ManageUsers.ps1` script is designed for efficient user creation within Azure Active Directory. 
+The script automates task creating users account leveraging AzureAD module capabilities.
+This tool is ideal for system administrators creating large users bases in Azure AD.
 
 ## Prerequisites
+
+- Internet connection.
 - PowerShell 5.0 or higher.
 - AzureAD module installed.
 - An Azure AD administrator account.
 
+## Features
+
+- **Add new user**: Add a new user to Azure Active Directory. Only need to enter their name, temporary password, and department.
+
+- **Remove an existing user**: Remove user and unassigned all the licenses with just their email address.
+
+- **Assign Microsoft 365 Business License**: Assign Microsoft 365 License to a user.
+
+- **Unassign licenses**: Unassigned all the licenses or M365 license.
+
+- **Search assigned licenses**: Search assigned licenses for a user by using a provided csv file containing licenses SKU ID, part ID, and name of licenses.
+
+- **Reset password**: Quickly reset password for a user.
+
 ## Installation
-1. **Install AzureAD Module**: Run `Install-Module AzureAD` in your PowerShell console.
-2. **Set Execution Policy**: To enable script execution, set the policy to bypass: `Set-ExecutionPolicy bypass -scope process`.
-3. **Run as Administrator**: Ensure to run PowerShell as an Administrator for proper script execution.
+
+1. **Install AzureAD Module**: 
+
+```PowerShell
+Install-Module AzureAD
+```
+2. **Set Execution Policy**: To enable script execution, set the policy to by pass. 
+
+```PowerShell
+Set-ExecutionPolicy bypass -scope process
+```
+3. **Run as Adminstator**: Ensure to run PowerShell as an Administrator for proper script execution.
 
 ## Configuration
-- **Connect to Azure AD**: Before running the script, connect to your Azure AD tenant using `Connect-AzureAD`.
-- **CSV File Setup**: Prepare a CSV file with user details as per your requirements. Set the `$CsvPath` variable in the script to the location of your CSV file.
+
+- **Connect to AzureAD**: Before running the script, connect to your Azure AD tenant using:
+```PowerShell
+Connect-AzureAD
+```
+- **CSV File Setup**: Prepare a CSV file with user details as per your requirements. The basic csv file should be included 4 columns `GivenName,Surname,Department,JobTitle`.
+
+
 
 ## Usage
-To run the script, navigate to the script's directory and execute:
+
+To run the script, ensure you are running PowerShell as Administrator. Navigate to the script's directory by using:
+```PowerShell
+Set-Location -path <Script path>
 ```
+
+Then run the script:
+
+```PowerShell
 .\ManageUser.ps1
 ```
+
 Ensure the CSV file is correctly configured as the script may depend on it for user data.
 
-## Features
-- **User Creation**: Batch create users based on CSV file inputs.
-- **User Update**: Modify existing user details.
-- **User Removal**: Remove users from Azure AD.
-- Additional functionalities as per the script's capabilities.
+## Troubleshooting
 
-## License
-[Specify the license here, if applicable]
-
-## Contributing
-Contributions to improve `ManageUser.ps1` are welcome. Please feel free to fork the repository, make your changes, and submit a pull request.
-
-## Contact
-For support or queries, please reach out to [Your Contact Information].
+- Ensure network connectivity to Azure AD.
+- Verify the csv file is accurate and accessible.
