@@ -286,9 +286,6 @@ function Open-OptionMenu {
         elseif ($option -eq "2"){
             Grant-365License
         }
-        # elseif ($option -eq "3") {
-        #     Search-365Users
-        # }
         elseif ($option -eq "3") {
             Enter-DelUser
         }
