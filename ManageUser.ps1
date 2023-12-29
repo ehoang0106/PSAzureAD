@@ -216,9 +216,6 @@ function Remove-Licenses {
 
 
 
-
-
-
 function Search-365Users {
     $Sku = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicense
 
@@ -267,7 +264,6 @@ function Search-LicenseName {
     }
     
 }
-
 function Open-OptionMenu {
     while($true){
         Write-Host "`n----------------------" 
@@ -283,7 +279,6 @@ function Open-OptionMenu {
         Write-Host "----------------------"
 
         $option = $(Write-Host "Enter option: " -ForegroundColor DarkCyan -NoNewline; Read-Host) 
-
 
         if ($option -eq "1"){
             Enter-NewUser
