@@ -216,17 +216,17 @@ function Remove-Licenses {
 
 
 
-function Search-365Users {
-    $Sku = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicense
+# function Search-365Users {
+#     $Sku = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicense
 
-    #this is SKU ID of Microsoft 365 Business standard
-    $Sku.SkuId = "f245ecc8-75af-4f8e-b61f-27d8114de5f3"
+#     #this is SKU ID of Microsoft 365 Business standard
+#     $Sku.SkuId = "f245ecc8-75af-4f8e-b61f-27d8114de5f3"
     
-    Get-AzureADUser -All $true | 
-        Where-Object {$_.AssignedLicenses.SkuId -contains $Sku.SkuId} | 
-        Select-Object DisplayName, UserPrincipalName |  #only show display name and user's email (userprincipalname)
-        Out-Host
-}
+#     Get-AzureADUser -All $true | 
+#         Where-Object {$_.AssignedLicenses.SkuId -contains $Sku.SkuId} | 
+#         Select-Object DisplayName, UserPrincipalName |  #only show display name and user's email (userprincipalname)
+#         Out-Host
+# }
 
 function Search-LicenseName {
     # import csv file
