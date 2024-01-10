@@ -216,17 +216,17 @@ function Remove-Licenses {
 
 
 
-# function Search-365Users {
-#     $Sku = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicense
+function Search-365Users {
+    $Sku = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicense
 
-#     #this is SKU ID of Microsoft 365 Business standard
-#     $Sku.SkuId = "f245ecc8-75af-4f8e-b61f-27d8114de5f3"
+    #this is SKU ID of Microsoft 365 Business standard
+    $Sku.SkuId = "f245ecc8-75af-4f8e-b61f-27d8114de5f3"
     
-#     Get-AzureADUser -All $true | 
-#         Where-Object {$_.AssignedLicenses.SkuId -contains $Sku.SkuId} | 
-#         Select-Object DisplayName, UserPrincipalName |  #only show display name and user's email (userprincipalname)
-#         Out-Host
-# }
+    Get-AzureADUser -All $true | 
+        Where-Object {$_.AssignedLicenses.SkuId -contains $Sku.SkuId} | 
+        Select-Object DisplayName, UserPrincipalName |  #only show display name and user's email (userprincipalname)
+        Out-Host
+}
 
 function Search-LicenseName {
     # import csv file
@@ -274,7 +274,8 @@ function Open-OptionMenu {
         Write-Host "Enter (3) to Remove an existing user" -ForegroundColor Red 
         Write-Host "Enter (4) to Unassigned licenses to a user" -ForegroundColor Red
         Write-Host "Enter (5) to Search assigned licenses to a user" -ForegroundColor Cyan
-        Write-Host "Enter (6) to Reset password for a user" -ForegroundColor Cyan 
+        Write-Host "Enter (6) to Reset password for a user" -ForegroundColor Cyan
+        Write-Host "Enter (7) to List users has been assigned M365 Standard license" -ForegroundColor Cyan 
         Write-Host "Enter (q) to Exit" -ForegroundColor Red 
         Write-Host "----------------------"
 
@@ -297,6 +298,9 @@ function Open-OptionMenu {
         }
         elseif ($option -eq "6") {
             Enter-NewUserPW
+        }
+        elseif ($option -eq "7") {
+            Search-365Users
         }
         elseif ($option -eq "q"){
             break
