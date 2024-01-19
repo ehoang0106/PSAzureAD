@@ -72,29 +72,20 @@ function Enter-DelUser {
     Write-Host "Warning! This function is removing user. Please be careful!!!" -ForegroundColor Red -BackgroundColor White
     Write-Host
     
-    while($true){
-        $option = $(Write-Host "Please confirm again before removing user (Y/N): " -ForegroundColor Red -BackgroundColor White -NoNewline; Read-Host) 
-        $option = $option.ToLower()
-        if($option -eq "y"){
-            $ObjectID = Read-Host "Enter user's email"
-
-            $user = Get-AzureADUser -ObjectId $ObjectID
-            $nameOfUser = $user.DisplayName
-            $emailOfUser = $user.UserPrincipalName
-
-            Remove-AzureADUser -ObjectId $ObjectID | Out-Host
-            Write-Host
-            Write-Host "$nameOfuser($emailOfUser) has been removed! The account is still staying in the Deleted User folder" -ForegroundColor Green
-            break
-        }
-        elseif($option -eq "n"){
-            break
-        }
-        else{
-            Write-Host "Invalid option. Try again!"
-        }
-    }
     
+    $ObjectID = Read-Host "Enter user's email"
+
+    $user = Get-AzureADUser -ObjectId $ObjectID
+    $nameOfUser = $user.DisplayName
+    $emailOfUser = $user.UserPrincipalName
+
+    Remove-AzureADUser -ObjectId $ObjectID | Out-Host
+    Write-Host
+    Write-Host "$nameOfuser($emailOfUser) has been removed! The account is still staying in the Deleted User folder" -ForegroundColor Green
+            
+        
+        
+        
 }
 
 function Enter-NewUserPW {
