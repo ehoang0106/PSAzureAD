@@ -241,12 +241,16 @@ function Search-LicenseName {
         
         $MatchFound = $false
         
+        #count the license has been assigned, initial = 0
+        $count = 0
+
         for ($i = 0; $i -lt $csv.licenseSKUID.Count; $i++) {
         
             foreach ($li in $UserLicenseSKUs) {
                 if ($li -eq $csv.licenseSKUID[$i]) {
                     Write-Host $csv.ProductName[$i] -ForegroundColor Green
                     $MatchFound = $true # set the flag to true if a match is found
+                    $count += 1
                 }
             }
         }
@@ -256,6 +260,10 @@ function Search-LicenseName {
             Write-Host "`n$name($email) has not been assigned any licenses." -ForegroundColor DarkYellow
         }
         
+        #Display total license
+        Write-Host
+        Write-Host "Total assigned license(s): $count"
+
     }
     catch {
         Write-Host "User not found!" -ForegroundColor red -BackgroundColor White
