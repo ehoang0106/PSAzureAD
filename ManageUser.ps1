@@ -295,8 +295,10 @@ function Open-OptionMenu {
         Write-Host "Enter (4) to Unassigned licenses to a user" -ForegroundColor Red
         Write-Host "Enter (5) to Search assigned licenses to a user" -ForegroundColor Cyan
         Write-Host "Enter (6) to Reset password for a user" -ForegroundColor Cyan
-        Write-Host "Enter (7) to List users has been assigned M365 Standard license" -ForegroundColor Cyan 
-        Write-Host "Enter (8) to List users has been assigned Exchange Online license" -ForegroundColor Cyan 
+        Write-Host "Enter (7) to List users has been assigned " -ForegroundColor Cyan -NoNewline
+        Write-Host "M365 Standard license" -ForegroundColor Yellow
+        Write-Host "Enter (8) to List users has been assigned " -ForegroundColor Cyan  -NoNewline
+        Write-Host "Exchange Online license" -ForegroundColor Yellow
         Write-Host "Enter (q) to Exit" -ForegroundColor Red 
         Write-Host "----------------------"
 
