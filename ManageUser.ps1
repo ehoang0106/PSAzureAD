@@ -217,11 +217,18 @@ function Search-365Users {
         Where-Object {$_.AssignedLicenses.SkuId -contains $Sku.SkuId} | 
         Select-Object DisplayName, UserPrincipalName |  #only show display name and user's email (userprincipalname)
         Out-Host
+
+    #display total users has been assigned license
+    $users = Get-AzureADUser -All $true | Where-Object {$_.AssignedLicenses.SkuId -contains $Sku.SkuId} 
+
+    Write-Host "Total users: $($users.length)"
+    
+
 }
 
 function Search-LicenseName {
     # import csv file
-    $csv = Import-Csv -path C:\Users\KhoaHoang\Downloads\VSCode\Powershell-Project\ManagerUser\sku.csv
+    $csv = Import-Csv -path ".\sku.csv"
 
     try {
         $email = Read-Host "Enter user's email"
