@@ -221,8 +221,23 @@ function Search-365Users {
 
     #display total users has been assigned license
     Write-Host "Total users: $($users.length)" -ForegroundColor Green
-    
+}
 
+
+function Search-ExchangeOnline {
+    #create a variable to hold sku
+    $Sku = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicense
+
+    #Exchange Online Plan 2 SKU
+    $Sku.SkuId = "19ec0d23-8335-4cbd-94ac-6050e30712fa"
+
+    $users = Get-AzureADUser -All $true | Where-Object {$_.AssignedLicenses.SkuId -contains $Sku.SkuId} 
+
+    #display detail users but only show DisplayName and their email
+    $users | Select-Object DisplayName, UserPrincipalName | Out-Host
+
+    #display total users has been assigned license
+    Write-Host "Total users: $($users.length)" -ForegroundColor Green
 }
 
 function Search-LicenseName {
@@ -281,6 +296,7 @@ function Open-OptionMenu {
         Write-Host "Enter (5) to Search assigned licenses to a user" -ForegroundColor Cyan
         Write-Host "Enter (6) to Reset password for a user" -ForegroundColor Cyan
         Write-Host "Enter (7) to List users has been assigned M365 Standard license" -ForegroundColor Cyan 
+        Write-Host "Enter (8) to List users has been assigned Exchange Online license" -ForegroundColor Cyan 
         Write-Host "Enter (q) to Exit" -ForegroundColor Red 
         Write-Host "----------------------"
 
@@ -306,6 +322,9 @@ function Open-OptionMenu {
         }
         elseif ($option -eq "7") {
             Search-365Users
+        }
+        elseif ($option -eq "8") {
+            Search-ExchangeOnline
         }
         elseif ($option -eq "q"){
             break
