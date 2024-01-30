@@ -208,20 +208,19 @@ function Remove-Licenses {
 
 
 function Search-365Users {
+    #create a variable to hold sku
     $Sku = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicense
 
     #this is SKU ID of Microsoft 365 Business standard
     $Sku.SkuId = "f245ecc8-75af-4f8e-b61f-27d8114de5f3"
-    
-    Get-AzureADUser -All $true | 
-        Where-Object {$_.AssignedLicenses.SkuId -contains $Sku.SkuId} | 
-        Select-Object DisplayName, UserPrincipalName |  #only show display name and user's email (userprincipalname)
-        Out-Host
 
-    #display total users has been assigned license
     $users = Get-AzureADUser -All $true | Where-Object {$_.AssignedLicenses.SkuId -contains $Sku.SkuId} 
 
-    Write-Host "Total users: $($users.length)"
+    #display detail users but only show DisplayName and their email
+    $users | Select-Object DisplayName, UserPrincipalName | Out-Host
+
+    #display total users has been assigned license
+    Write-Host "Total users: $($users.length)" -ForegroundColor Green
     
 
 }
