@@ -99,7 +99,7 @@ function Enter-NewUserPW {
         $User = Get-AzureADUser -ObjectId $Email
         $NameOfUser = $User.DisplayName
 
-        Set-AzureADUserPassword -ObjectId $Email -Password $Password
+        Set-AzureADUserPassword -ObjectId $Email -Password $Password -ForceChangePasswordNextLogin
         Write-Host
         Write-Host "Successfully reset password for $NameOfUser($Email)" -ForegroundColor Green
     }
